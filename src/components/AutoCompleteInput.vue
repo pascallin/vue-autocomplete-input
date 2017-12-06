@@ -5,6 +5,7 @@
     placeholder="enter things..."
     @keyup.down="calMatchListIndex(1)" 
     @keyup.up="calMatchListIndex(-1)" 
+    @keyup.enter="clearMatchList" 
     @click="resetMatchList"
     @blur="clearMatchList"
     />
@@ -12,7 +13,7 @@
     <li v-for="(item, index) in matchList">
       <p 
         :class="{'item-selected': isSelected(index)}"
-        @mouseenter="setMatchList(index)">
+        @mouseenter="setMatchListIndex(index)">
       {{item}}</p>
     </li>
   </div>
@@ -28,9 +29,9 @@ export default {
       dataList: [ // 预设值数组
         'pascal', 'php', 'nodejs', 'vuejs', 'reactjs'
       ],
-      maxCount: 8, //补全输入最大显示数字
-      matchList: [], //匹配输入值的数组
-      matchListIndex: null //匹配输入值数组的索引
+      maxCount: 8, // 补全输入最大显示数字
+      matchList: [], // 匹配输入值的数组
+      matchListIndex: null // 匹配输入值数组的索引
     }
   },
   watch: {
@@ -57,7 +58,11 @@ export default {
         this.matchList = matchData.slice(0, this.maxCount)
       }
     },
-    // 计算MatchIndex
+    // 直接设置MatchListIndex
+    setMatchListIndex (index) {
+      this.matchListIndex = index
+    },
+    // 计算MatchListIndex
     calMatchListIndex (param) {
       if (this.matchListIndex === null) {
         this.matchListIndex = 0
