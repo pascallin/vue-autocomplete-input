@@ -1,19 +1,21 @@
 <template>
 <div>
   <input 
+    :placeholder="this.placeholder"
+    ref="input"
     v-model="data"
-    placeholder="enter things..."
+    @keyup.enter="updateValue($event.target.value)"
     @keyup.down="calMatchListIndex(1)" 
     @keyup.up="calMatchListIndex(-1)" 
-    @keyup.enter="clearMatchList" 
     @click="resetMatchList"
     @blur="clearMatchList"
+    @keyup.esc="clearMatchList"
     />
   <div>
     <li v-for="(item, index) in matchList">
       <p 
         :class="{'item-selected': isSelected(index)}"
-        @mouseenter="setMatchListIndex(index)">
+        @mouseenter="setMatchList(index)">
       {{item}}</p>
     </li>
   </div>
@@ -23,15 +25,32 @@
 <script>
 export default {
   name: 'AutoCompleteInput',
+  props: {
+    // 绑定到input的数据
+    value: [String, Number],
+    // 补全输入最大显示数字
+    maxCount: {
+      type: Number,
+      default: 8
+    },
+    // 预设值数组
+    presetList: Array,
+    // placeholder
+    placeholder: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      data: '', // 绑定到input的数据
-      dataList: [ // 预设值数组
-        'pascal', 'php', 'nodejs', 'vuejs', 'reactjs'
-      ],
-      maxCount: 8, // 补全输入最大显示数字
+      data: this.value || '', // 临时处理值
       matchList: [], // 匹配输入值的数组
       matchListIndex: null // 匹配输入值数组的索引
+    }
+  },
+  computed: {
+    dataList () {
+      return this.presetList || []
     }
   },
   watch: {
@@ -47,6 +66,11 @@ export default {
     }
   },
   methods: {
+    updateValue (value) {
+      this.matchList = []
+      // 通过 input 事件带出数值
+      this.$emit('input', value)
+    },
     // 设置autocomplete面板内容
     setMatchList () {
       if (this.matchListIndex === null) {
@@ -58,11 +82,7 @@ export default {
         this.matchList = matchData.slice(0, this.maxCount)
       }
     },
-    // 直接设置MatchListIndex
-    setMatchListIndex (index) {
-      this.matchListIndex = index
-    },
-    // 计算MatchListIndex
+    // 计算MatchIndex
     calMatchListIndex (param) {
       if (this.matchListIndex === null) {
         this.matchListIndex = 0

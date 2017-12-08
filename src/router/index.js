@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AutoCompleteInput from '@/components/AutoCompleteInput'
+import IndexPage from '@/components/IndexPage'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'AutoCompleteInput',
-      component: AutoCompleteInput
+      name: 'IndexPage',
+      component: IndexPage
     }
   ]
 })
