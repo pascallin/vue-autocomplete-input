@@ -67,7 +67,8 @@ export default {
   },
   methods: {
     updateValue (value) {
-      this.matchList = []
+      this.clearMatchList()
+      this.data = ''
       // 通过 input 事件带出数值
       this.$emit('input', value)
     },
